@@ -754,6 +754,41 @@ this.state = {
       if (gapMatch) this.el.choiceUi.style.gap = gapMatch[1] + 'px';
     }
 
+    if (window.speechSynthesis && choices.length > 0) {
+      window.speechSynthesis.cancel();
+      
+      const ttsParts = [];
+      choices.forEach((c, idx) => {
+        const rawBtnText = c.text_rubi || c.text || '';
+        const btnText = this.formatWakachiText(rawBtnText);
+        const textOnly = this.getVoiceText(this.parseTextToTokens(btnText));
+        
+        ttsParts.push(`選択肢、${idx + 1}。 ${textOnly}。`);
+      });
+      
+      const ttsText = ttsParts.join(' ');
+      const u = new SpeechSynthesisUtterance(ttsText);
+      u.lang = 'ja-JP';
+      u.volume = settings.voiceVolume * 0.5;
+      
+      const firstChoice = choices[0];
+      if (firstChoice && firstChoice.voice_type && String(firstChoice.voice_type).toLowerCase() === 'web') {
+        const voices = speechSynthesis.getVoices();
+        const vId = String(firstChoice.voice_id || '');
+        if (vId !== '') {
+          const isIdx = /^\d+$/.test(vId);
+          if (isIdx) {
+            const idx = parseInt(vId, 10);
+            if (voices[idx]) u.voice = voices[idx];
+          } else {
+            const match = voices.find(v => v.name.includes(vId) || v.voiceURI.includes(vId));
+            if (match) u.voice = match;
+          }
+        }
+      }
+      window.speechSynthesis.speak(u);
+    }
+
     const allGroupFlagNames = [];
     choices.forEach(c => {
       const nameStr = String(c.name || '').trim();
@@ -1013,6 +1048,30 @@ this.state = {
         const cText = this.formatWakachiText(rawCText);
         chapText.innerHTML = this.buildRubyHtml(this.parseTextToTokens(cText)).replace(/\n/g, '<br>');
         
+        if (window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+          const ttsText = this.getVoiceText(this.parseTextToTokens(cText));
+          const u = new SpeechSynthesisUtterance(ttsText);
+          u.lang = 'ja-JP';
+          u.volume = settings.voiceVolume * 0.5;
+          
+          if (step.voice_type && String(step.voice_type).toLowerCase() === 'web') {
+            const voices = speechSynthesis.getVoices();
+            const vId = String(step.voice_id || '');
+            if (vId !== '') {
+              const isIdx = /^\d+$/.test(vId);
+              if (isIdx) {
+                const idx = parseInt(vId, 10);
+                if (voices[idx]) u.voice = voices[idx];
+              } else {
+                const match = voices.find(v => v.name.includes(vId) || v.voiceURI.includes(vId));
+                if (match) u.voice = match;
+              }
+            }
+          }
+          window.speechSynthesis.speak(u);
+        }
+        
         chapScreen.classList.remove('hidden'); chapScreen.style.animation = 'none'; chapScreen.offsetHeight; 
         chapScreen.style.animation = 'chapterFadeInOut 4.5s ease forwards';
         
@@ -1136,10 +1195,14 @@ this.state = {
     let audioSrc = this.getStepSrc(step); 
     let isWebSpeech = false; let webSpeechText = ''; let webSpeechVoiceId = '';
     const currentIndex = this.state.index; 
-
-    if (!audioSrc && name && !isHiddenName) {
+    if (!audioSrc) {
       let vConf = null;
-      for (const n of speakingNames) { if (this.state.charVoices[n]) { vConf = this.state.charVoices[n]; break; } }
+      if (step.voice_type) {
+        vConf = { type: String(step.voice_type).toLowerCase(), id: step.voice_id !== undefined ? String(step.voice_id) : '' };
+      } else if (name && !isHiddenName) {
+        for (const n of speakingNames) { if (this.state.charVoices[n]) { vConf = this.state.charVoices[n]; break; } }
+      }
+      
       if (vConf) {
         if (vConf.type === 'web') { isWebSpeech = true; webSpeechText = voiceText; webSpeechVoiceId = vConf.id; } 
         else if (vConf.type === 'voicevox') {
@@ -1178,12 +1241,27 @@ this.state = {
           clearTimeout(timeout); resolve();
         }
       });
-      if (this.state.index !== voiceLoadIndex || !this.state.typing || !this.state.currentVoice || this.state.isSkip) return;
+      if (this.state.index !== voiceLoadIndex || !this.state.currentVoice || this.state.isSkip) return;
       this.state.currentVoice.play().catch(()=>{});
+      
     } else if (isWebSpeech && window.speechSynthesis) {
-      const u = new SpeechSynthesisUtterance(webSpeechText); u.lang = 'ja-JP'; u.volume = Math.min(1.0, settings.voiceVolume * 2);
+      const u = new SpeechSynthesisUtterance(webSpeechText); 
+      u.lang = 'ja-JP'; 
+      u.volume = settings.voiceVolume * 0.5;
+      
       const voices = speechSynthesis.getVoices();
-      if (webSpeechVoiceId) { const match = voices.find(v => v.name.includes(webSpeechVoiceId) || v.voiceURI.includes(webSpeechVoiceId)); if (match) u.voice = match; }
+      if (webSpeechVoiceId !== '') {
+        const isIdx = /^\d+$/.test(webSpeechVoiceId);
+        if (isIdx) {
+          const idx = parseInt(webSpeechVoiceId, 10);
+          if (voices[idx]) {
+            u.voice = voices[idx];
+          }
+        } else {
+          const match = voices.find(v => v.name.includes(webSpeechVoiceId) || v.voiceURI.includes(webSpeechVoiceId)); 
+          if (match) u.voice = match;
+        }
+      }
       if (this.state.typing) speechSynthesis.speak(u);
     }
 
