@@ -769,7 +769,7 @@ this.state = {
       const ttsText = ttsParts.join(' ');
       const u = new SpeechSynthesisUtterance(ttsText);
       u.lang = 'ja-JP';
-      u.volume = settings.voiceVolume * 0.5;
+      u.volume = settings.voiceVolume * 1.0;
       
       const firstChoice = choices[0];
       if (firstChoice && firstChoice.voice_type && String(firstChoice.voice_type).toLowerCase() === 'web') {
@@ -1053,7 +1053,7 @@ this.state = {
           const ttsText = this.getVoiceText(this.parseTextToTokens(cText));
           const u = new SpeechSynthesisUtterance(ttsText);
           u.lang = 'ja-JP';
-          u.volume = settings.voiceVolume * 0.5;
+          u.volume = settings.voiceVolume * 1.0;
           
           if (step.voice_type && String(step.voice_type).toLowerCase() === 'web') {
             const voices = speechSynthesis.getVoices();
@@ -1247,7 +1247,7 @@ this.state = {
     } else if (isWebSpeech && window.speechSynthesis) {
       const u = new SpeechSynthesisUtterance(webSpeechText); 
       u.lang = 'ja-JP'; 
-      u.volume = settings.voiceVolume * 0.5;
+      u.volume = settings.voiceVolume * 1.0;
       
       const voices = speechSynthesis.getVoices();
       if (webSpeechVoiceId !== '') {
