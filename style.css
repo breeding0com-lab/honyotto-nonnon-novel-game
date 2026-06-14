@@ -558,3 +558,49 @@ rt {
   /* ▼ ユーザー様調整の完璧な数値（-7px）を維持 */
   margin-bottom: -4px !important; 
 }
+
+/* ======================================================================
+ * AUTOモード表示バッジ（画面右上へ配置変更）
+ * ====================================================================== */
+#auto-badge {
+  position: absolute;
+  top: max(20px, 2.2cqh);             /* ★ bottomから「top（上基準）」へ変更 */
+  right: max(20px, 2.0cqw);           /* ★ 画面の右端からの距離を指定 */
+  font-family: var(--font-ui);
+  font-size: max(11px, 1.1cqw);
+  font-weight: bold;
+  color: var(--main-color);
+  background: rgba(var(--main-color-rgb), 0.15); /* メインカラーベースの極薄半透明背景 */
+  border: 1px solid var(--main-color);          /* メインカラーの境界線 */
+  padding: 6px 14px;                  /* 右上に置くため、少しだけパディングを広くして存在感を調整 */
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 40;                        /* ★ 他の画面要素（上部メニューなど）より手前に見せるため z-index を 40 へ引き上げ */
+  display: flex;
+  align-items: center;
+  gap: 8px;                           
+}
+
+/* 非表示用のクラス */
+#auto-badge.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 録画ランプ風の優しく点滅するドットアニメーション */
+@keyframes autoDotFlash {
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+#auto-badge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--main-color);
+  animation: autoDotFlash 1.5s infinite ease-in-out;
+}
