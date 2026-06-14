@@ -746,6 +746,14 @@ this.state = {
 
   showChoices(choices, nextIndex) {
     this.stopSkip();
+    
+    if (this.activeSePlayers) {
+      this.activeSePlayers.forEach(p => p.pause());
+      this.activeSePlayers = [];
+    }
+    
+    this.stopVoice();
+
     this.el.choiceUi.innerHTML = '';
     this.el.choiceUi.style.inset = '0'; this.el.choiceUi.style.transform = 'none';
 
@@ -755,21 +763,18 @@ this.state = {
     }
 
     if (window.speechSynthesis && choices.length > 0) {
-      window.speechSynthesis.cancel();
-      
       const ttsParts = [];
       choices.forEach((c, idx) => {
         const rawBtnText = c.text_rubi || c.text || '';
         const btnText = this.formatWakachiText(rawBtnText);
         const textOnly = this.getVoiceText(this.parseTextToTokens(btnText));
-        
         ttsParts.push(`選択肢、${idx + 1}。 ${textOnly}。`);
       });
       
       const ttsText = ttsParts.join(' ');
       const u = new SpeechSynthesisUtterance(ttsText);
       u.lang = 'ja-JP';
-      u.volume = settings.voiceVolume * 1.0;
+      u.volume = settings.voiceVolume; 
       
       const firstChoice = choices[0];
       if (firstChoice && firstChoice.voice_type && String(firstChoice.voice_type).toLowerCase() === 'web') {
@@ -1049,11 +1054,12 @@ this.state = {
         chapText.innerHTML = this.buildRubyHtml(this.parseTextToTokens(cText)).replace(/\n/g, '<br>');
         
         if (window.speechSynthesis) {
-          window.speechSynthesis.cancel();
+          window.speechSynthesis.cancel(); // 前のボイスを即座に停止
+          
           const ttsText = this.getVoiceText(this.parseTextToTokens(cText));
           const u = new SpeechSynthesisUtterance(ttsText);
           u.lang = 'ja-JP';
-          u.volume = settings.voiceVolume * 1.0;
+          u.volume = settings.voiceVolume; 
           
           if (step.voice_type && String(step.voice_type).toLowerCase() === 'web') {
             const voices = speechSynthesis.getVoices();
@@ -1069,7 +1075,12 @@ this.state = {
               }
             }
           }
-          window.speechSynthesis.speak(u);
+          
+          setTimeout(() => {
+            if (!chapScreen.classList.contains('hidden')) {
+              window.speechSynthesis.speak(u);
+            }
+          }, 1200);
         }
         
         chapScreen.classList.remove('hidden'); chapScreen.style.animation = 'none'; chapScreen.offsetHeight; 
