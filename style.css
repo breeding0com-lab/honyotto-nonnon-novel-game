@@ -558,3 +558,128 @@ rt {
   /* ▼ ユーザー様調整の完璧な数値（-7px）を維持 */
   margin-bottom: -4px !important; 
 }
+
+/* ======================================================================
+ * style.css の末尾に追加する差分
+ * モバイル・iPhone専用のレスポンシブ＆レイアウト崩れ対策
+ * ====================================================================== */
+
+/* --------------------------------------------------
+ * 1. モバイル全般 (.is-mobile) の共通調整
+ * -------------------------------------------------- */
+.is-mobile {
+  /* スクロールによる画面の引っ張り・バウンスを徹底防止 */
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* モバイル環境ではゲーム解像度に対して要素が詰まりやすいため、フォントサイズに安全圏を設ける */
+.is-mobile #dialog-text {
+  font-size: clamp(14px, 3.8cqw, 20px) !important;
+  line-height: 1.6 !important;
+  bottom: 15px !important;
+  left: 6% !important;
+  right: 6% !important;
+  top: auto !important; /* 絶対位置指定をリセットしボトム基準でフィット */
+}
+
+.is-mobile #name-tag {
+  font-size: clamp(13px, 4.2cqw, 18px) !important;
+  left: 6% !important;
+  bottom: calc(35% - 20px) !important;
+  top: auto !important;
+}
+
+/* モバイル時のルビとベース文字の重なり調整 */
+.is-mobile #dialog-text rt,
+.is-mobile .choice-btn rt {
+  font-size: 0.45em !important;
+  margin-bottom: -1px !important;
+}
+
+/* メニューボタン・トグルバーのモバイル調整（タップ領域の確保とサイズ適正化） */
+.is-mobile #game-menu-bar {
+  top: 10px;
+  left: 10px;
+  /* iOSセーフエリアへの考慮 */
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: calc(10px + env(safe-area-inset-left, 0px));
+  gap: 8px;
+}
+
+.is-mobile .game-btn {
+  width: clamp(34px, 8cqw, 48px) !important;
+  height: clamp(34px, 8cqw, 48px) !important;
+  font-size: clamp(8px, 1.8cqw, 12px) !important;
+  border-radius: 4px;
+}
+
+/* 選択肢ボタンのタップ崩れ、画面外はみ出しを防止 */
+.is-mobile #choice-ui {
+  gap: 10px;
+  padding: 10px;
+}
+
+.is-mobile .choice-btn {
+  width: min(90%, 550px) !important;
+  padding: 12px 16px 12px 45px !important;
+  font-size: clamp(13px, 3.5cqw, 18px) !important;
+  border-radius: 6px;
+}
+
+.is-mobile .choice-btn span {
+  margin-left: 0 !important;
+}
+
+/* --------------------------------------------------
+ * 2. iPhone/iPod Touch などの極小画面 (.is-iphone) の微調整
+ * -------------------------------------------------- */
+.is-iphone #dialog-bg {
+  height: 40% !important; /* 縦横比が細長いスマートフォンでテキストが溢れないよう高さを調整 */
+}
+
+.is-iphone #dialog-text {
+  font-size: clamp(13px, 4cqw, 17px) !important;
+  line-height: 1.5 !important;
+  bottom: 12px !important;
+}
+
+.is-iphone #name-tag {
+  font-size: clamp(12px, 4.5cqw, 16px) !important;
+  bottom: calc(40% - 22px) !important;
+}
+
+.is-iphone .choice-btn {
+  padding: 10px 14px 10px 35px !important;
+  font-size: clamp(12px, 3.8cqw, 16px) !important;
+}
+
+/* タイトルメニューがiPhoneのホームインジケータ（画面下部のバー）と被るのを防ぐ */
+.is-iphone #title-menu {
+  bottom: calc(8% + env(safe-area-inset-bottom, 0px)) !important;
+  gap: 1.5cqh !important;
+}
+
+.is-iphone .title-btn {
+  font-size: clamp(14px, 4cqw, 20px) !important;
+  padding: 1cqh 0 !important;
+}
+
+/* システムパネルがスマホ画面内に確実に収まるように最大高さを制限 */
+.is-mobile .system-panel {
+  padding: 20px !important;
+  width: 95% !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+.is-mobile .system-row {
+  margin-bottom: 12px !important;
+}
+
+.is-mobile .system-title {
+  margin-bottom: 16px !important;
+  font-size: clamp(16px, 5cqw, 22px) !important;
+}
