@@ -1251,9 +1251,21 @@ finishTyping() {
 
   advanceStory() { if (this.state.index >= SCENARIO.length) return; if (!SCENARIO[this.state.index].cmd) { this.state.index++; this.executeStep(); } }
 
-  toggleAuto() { 
-    this.playSysSe(settings.seClick); this.state.isAuto = !this.state.isAuto; this.$('btn-auto').classList.toggle('on', this.state.isAuto); 
-    if (this.state.isAuto && !this.state.typing) { this.state.autoTimer = setTimeout(() => this.advanceStory(), settings.autoDelay); } else { clearTimeout(this.state.autoTimer); }
+toggleAuto() { 
+    this.playSysSe(settings.seClick); 
+    this.state.isAuto = !this.state.isAuto; 
+    this.$('btn-auto').classList.toggle('on', this.state.isAuto); 
+    
+    const autoBadge = this.$('auto-badge');
+    if (autoBadge) {
+      autoBadge.classList.toggle('hidden', !this.state.isAuto);
+    }
+    
+    if (this.state.isAuto && !this.state.typing) { 
+      this.scheduleAutoAdvance(); 
+    } else { 
+      clearTimeout(this.state.autoTimer); 
+    }
   }
 
   startSkip() { 
@@ -1275,7 +1287,12 @@ finishTyping() {
 
 endGame() { 
     this.stopTyping(); this.stopSkip(); this.state.isAuto = false; this.$('btn-auto').classList.remove('on'); 
+    
+    const autoBadge = this.$('auto-badge');
+    if (autoBadge) autoBadge.classList.add('hidden');
+    
     this.stopVoice(); this.fadeBGM(''); this.state.screenEffect = ''; this.state.particleType = '';
+
     
     if (this.activeSePlayers) {
       this.activeSePlayers.forEach(p => p.pause());
