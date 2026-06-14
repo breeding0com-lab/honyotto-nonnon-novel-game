@@ -147,7 +147,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
 
 .choice-btn { 
   width: min(1000px, 80%); 
-  padding: 20px 24px; 
+  padding: 20px 24px 20px 65px; 
+  
   line-height: 1.6; 
   font-family: var(--font-main); 
   font-size: max(17px, 2.0cqw); 
@@ -524,10 +525,7 @@ rt {
 /* 選択肢のテキスト全体の左マージン（エラー箇所を綺麗に整理統合しました） */
 .is-ipad .choice-btn span {
   display: inline-block !important;
-  
-  /* ▼ ここのマージンで、ボタンの左端から綺麗に余白（40px）が空いた「左寄せ」を作ります */
-  margin-left: 40px !important;                
-  
+  margin-left: 65px !important;                
   text-align: left !important;
 }
 
