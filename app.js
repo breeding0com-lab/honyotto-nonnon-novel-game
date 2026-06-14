@@ -1729,18 +1729,31 @@ endGame() {
  * Main Initialization Flow
  * DOM読み込み時のデータ取得、設定反映、プリロード処理
  * ====================================================================== */
+/* ======================================================================
+ * Main Initialization Flow の修正差分
+ * ====================================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
   window.app = new NovelGameEngine();
   
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                (navigator.userAgentData === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (isIOS) {
+  const ua = navigator.userAgent;
+  const isIPad = /iPad/.test(ua) || (navigator.userAgentData === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isIPhone = /iPhone|iPod/.test(ua);
+  const isMobile = isIPhone || /Android.+Mobile|Windows Phone|IEMobile|Opera Mini/i.test(ua);
+
+  if (isIPad) {
     document.documentElement.classList.add('is-ipad');
+  }
+  if (isIPhone) {
+    document.documentElement.classList.add('is-iphone');
+  }
+  if (isMobile) {
+    document.documentElement.classList.add('is-mobile');
   }
   
   const loaderEl = document.getElementById('loading-overlay'); 
   const dL = new DataLoader();
 
+  // (以下、既存の初期化処理をそのまま維持)
   if (typeof LOCAL_CONFIG !== 'undefined') {
     CONFIG = dL._parseData(LOCAL_CONFIG);
   }
@@ -1772,7 +1785,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-dL.applyConfigs(CONFIG); 
+  dL.applyConfigs(CONFIG); 
   await window.app.preloadGameImages(SCENARIO, CONFIG);
 
   const isHiragana = localStorage.getItem('global_hiragana_mode') === 'true';
