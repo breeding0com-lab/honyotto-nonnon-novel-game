@@ -1391,11 +1391,17 @@ endGame() {
     
     if (this.activeSePlayers) {
       this.activeSePlayers.forEach(p => p.pause());
-      this.activeSePlayers = []; }
+      this.activeSePlayers = [];
+    }
     
     this.stopVoice(); this.stopTyping(); this.el.choiceUi.style.display = 'none';
     
-    const snap = this.state.history.pop();
+    let snap = this.state.history.pop();
+    
+    if (snap && snap.index === this.state.index && this.state.history.length > 0) {
+      snap = this.state.history.pop();
+    }
+    
     this.state.logs = this.state.logs.filter(l => l.index < snap.index); 
     this.state.index = snap.index; 
     this.state.flags = JSON.parse(JSON.stringify(snap.flags)); 
