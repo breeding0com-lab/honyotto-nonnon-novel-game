@@ -16,7 +16,6 @@ let SCENARIO = [ { cmd: 'config', name: 'title_text', text: 'NOVEL GAME' }, { cm
 let CONFIG = [];
 window.app = null;
 
-
 /* ======================================================================
  * Class: DataLoader
  * JSONデータの取得やゲーム設定の動的反映を行う
@@ -534,6 +533,42 @@ this.state = {
 
   setVoiceVolume(val) { settings.voiceVolume = val / 100; if (this.state.currentVoice) this.state.currentVoice.volume = settings.voiceVolume; }
   setBgmVolume(sliderValue) { settings.bgmVolume = sliderValue / 100; this.el.bgmPlayer.volume = settings.bgmVolume; }
+
+  showConfirm(message) {
+    this.playSysSe(settings.seClick);
+    return new Promise(resolve => {
+      const screen = this.$('custom-confirm-screen');
+      const msgEl = this.$('confirm-message');
+      const yesBtn = this.$('confirm-yes-btn');
+      const noBtn = this.$('confirm-no-btn');
+      
+      msgEl.textContent = message;
+      screen.classList.remove('hidden');
+      screen.classList.add('active');
+      
+      const onYes = () => {
+        screen.classList.add('hidden');
+        screen.classList.remove('active');
+        cleanup();
+        resolve(true);
+      };
+      
+      const onNo = () => {
+        screen.classList.add('hidden');
+        screen.classList.remove('active');
+        cleanup();
+        resolve(false);
+      };
+      
+      const cleanup = () => {
+        yesBtn.removeEventListener('click', onYes);
+        noBtn.removeEventListener('click', onNo);
+      };
+      
+      yesBtn.addEventListener('click', onYes);
+      noBtn.addEventListener('click', onNo);
+    });
+  }
 
   setupWindowResizer() {
     window.addEventListener('resize', () => {
@@ -1054,7 +1089,7 @@ this.state = {
         chapText.innerHTML = this.buildRubyHtml(this.parseTextToTokens(cText)).replace(/\n/g, '<br>');
         
         if (window.speechSynthesis) {
-          window.speechSynthesis.cancel(); // 前のボイスを即座に停止
+          window.speechSynthesis.cancel();
           
           const ttsText = this.getVoiceText(this.parseTextToTokens(cText));
           const u = new SpeechSynthesisUtterance(ttsText);
@@ -1518,8 +1553,10 @@ endGame() {
     this.executeStep();
   }
 
-  rewindTo(targetIndex) {
-    if (!confirm('この時点まで巻き戻しますか？\n（以降の選択肢や獲得したフラグ、ポイントはやり直しになります）')) return;
+    async rewindTo(targetIndex) {
+    const ok = await this.showConfirm('この時点まで巻き戻しますか？\n（以降の選択肢や獲得したフラグ、ポイントはやり直しになります）');
+    if (!ok) return;
+    
     this.playSysSe(settings.seClick);
     const targetSnapIndex = this.state.history.findIndex(h => h.index === targetIndex);
     if (targetSnapIndex === -1) { alert('履歴が古すぎるため、この時点までは戻れません。'); return; }
@@ -1608,7 +1645,14 @@ endGame() {
 
       if (data) {
         const delBtn = document.createElement('button'); delBtn.className = 'save-slot-del'; delBtn.textContent = 'DEL';
-        delBtn.onclick = (e) => { e.stopPropagation(); if (confirm(`SLOT ${i} のセーブデータを削除しますか？`)) { localStorage.removeItem(`save_slot_${i}`); this.renderSaveSlots(mode); } };
+        delBtn.onclick = async (e) => { 
+          e.stopPropagation(); 
+          const ok = await this.showConfirm(`SLOT ${i} のセーブデータを削除しますか？`);
+          if (ok) { 
+            localStorage.removeItem(`save_slot_${i}`); 
+            this.renderSaveSlots(mode); 
+          } 
+        };
         slot.appendChild(delBtn);
       }
       container.appendChild(slot);
@@ -1692,16 +1736,19 @@ endGame() {
 
   loadFromSlot(slot) { this.loadSaveData(JSON.parse(localStorage.getItem(`save_slot_${slot}`))); }
 
-  resetAllSaves() {
+  async resetAllSaves() {
     this.playSysSe(settings.seClick);
-    if (confirm("すべてのセーブデータとオートセーブを完全に削除します。\nよろしいですか？")) {
+    const ok = await this.showConfirm("すべてのセーブデータを削除します。\nよろしいですか？");
+    if (ok) {
       for (let i = 1; i <= 99; i++) { localStorage.removeItem(`save_slot_${i}`); }
       localStorage.removeItem('save_slot_auto'); localStorage.removeItem('save_auto_list');
       localStorage.removeItem('global_src_key');
       localStorage.removeItem('global_flags'); 
-      alert("すべてのセーブデータと設定を削除しました。"); this.renderSaveSlots(this.state.saveMode); this.$('continue-btn').disabled = true;
+      this.renderSaveSlots(this.state.saveMode); 
+      this.$('continue-btn').disabled = true;
     }
   }
+
 
   openSystem() { 
     if (this.state.isSkip) this.stopSkip();
