@@ -604,3 +604,15 @@ rt {
   background-color: var(--main-color);
   animation: autoDotFlash 1.5s infinite ease-in-out;
 }
+
+/* ======================================================================
+ * ゲーム内カスタムポップアップ（はい/いいえ）
+ * ====================================================================== */
+#custom-confirm-screen {
+  position: absolute;                /* ★追加：画面の絶対配置 */
+  inset: 0;                          /* ★追加：上下左右に画面いっぱいに広げる */
+  z-index: 999;                      /* 何があっても一番手前に表示する優先度 */
+}
+#custom-confirm-screen.hidden {
+  display: none !important;          /* 隠れている時は非表示に固定 */
+}
