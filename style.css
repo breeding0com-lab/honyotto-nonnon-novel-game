@@ -674,7 +674,7 @@ rt {
 /* 選択肢のテキスト全体の左マージン（エラー箇所を綺麗に整理統合しました） */
 .is-ipad .choice-btn span {
   display: inline-block !important;
-  margin-left: 65px !important;                
+  margin-left: 32px !important;                
   text-align: left !important;
 }
 
