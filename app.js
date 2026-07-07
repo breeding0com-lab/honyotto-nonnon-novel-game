@@ -1457,7 +1457,7 @@ this.state = {
     const choiceBtns = Array.from(this.el.choiceUi.querySelectorAll('.choice-btn')).filter(b => b.dataset.fixedWidth !== 'true');
     if (choiceBtns.length > 0) {
       const maxWidth = Math.max(...choiceBtns.map(b => b.offsetWidth));
-      choiceBtns.forEach(b => { b.style.width = maxWidth + 'px'; });
+      choiceBtns.forEach(b => { b.style.width = (maxWidth + 2) + 'px'; });
     }
   }
 
