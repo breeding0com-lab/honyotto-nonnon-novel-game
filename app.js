@@ -1452,6 +1452,12 @@ this.state = {
       this.el.choiceUi.appendChild(btn);
     });
     this.el.choiceUi.style.display = 'flex';
+
+    const choiceBtns = Array.from(this.el.choiceUi.querySelectorAll('.choice-btn:not(.is-image-btn)'));
+    if (choiceBtns.length > 0) {
+      const maxWidth = Math.max(...choiceBtns.map(b => b.offsetWidth));
+      choiceBtns.forEach(b => { b.style.width = maxWidth + 'px'; });
+    }
   }
 
   jumpTo(markName) {
@@ -2541,6 +2547,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   if (isIOS) {
     document.documentElement.classList.add('is-ipad');
+  }
+
+  const isChromeOS = /CrOS/.test(navigator.userAgent);
+  if (isChromeOS) {
+    document.documentElement.classList.add('is-chromebook');
   }
   
   const loaderEl = document.getElementById('loading-overlay'); 
