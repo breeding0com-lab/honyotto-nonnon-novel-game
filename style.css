@@ -165,7 +165,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
 #choice-ui { position: absolute; inset: 0; z-index: 25; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); transition: opacity 0.3s; }
 
 .choice-btn { 
-  width: min(1200px, 92%); 
+  width: max-content; 
+  max-width: min(1200px, 92%); 
   padding: 20px 28px 20px 32px; 
   
   line-height: 1.6; 
@@ -201,6 +202,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
 
 ruby { 
   ruby-align: center; 
+  ruby-position: over;
   text-align: center; 
   letter-spacing: normal !important; 
   /* WebフォントによるWebKitの幅バグを防ぐため、安全なシステム標準フォントを指定 */
@@ -301,7 +303,7 @@ rt {
 .panel-theme-sharp .system-panel {
   border: none;
   border-radius: 0;
-  background: var(--panel-bg-ovr, rgba(8, 12, 20, 0.92));
+  background: var(--panel-bg-ovr, var(--panel-bg));
   box-shadow: 0 24px 70px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04) inset;
   background-image:
     linear-gradient(var(--panel-accent-ovr, var(--main-color)), var(--panel-accent-ovr, var(--main-color))) left top / 30px 3px no-repeat,
@@ -313,27 +315,27 @@ rt {
     linear-gradient(var(--panel-accent-ovr, var(--main-color)), var(--panel-accent-ovr, var(--main-color))) right bottom / 30px 3px no-repeat,
     linear-gradient(var(--panel-accent-ovr, var(--main-color)), var(--panel-accent-ovr, var(--main-color))) right bottom / 3px 30px no-repeat,
     repeating-linear-gradient(180deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px);
-  color: #e8f0ff;
+  color: var(--panel-text-ovr, var(--ui-text-main));
 }
 .panel-theme-sharp .system-title, .panel-theme-sharp #save-mode-title {
-  color: var(--panel-text-ovr, #ffffff); letter-spacing: 0.5em; text-indent: 0.5em; text-align: left;
+  color: var(--panel-text-ovr, var(--ui-text-main)); letter-spacing: 0.5em; text-indent: 0.5em; text-align: left;
   border-bottom: 1px solid rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.5); padding-bottom: 16px;
 }
-.panel-theme-sharp .system-label { color: var(--panel-text-ovr, #cfe0ff); }
+.panel-theme-sharp .system-label { color: var(--panel-text-ovr, var(--ui-text-main)); }
 .panel-theme-sharp .sys-btn {
   background: transparent; border-radius: 0; border: 1px solid var(--panel-accent-ovr, var(--main-color));
   color: var(--panel-text-ovr, var(--panel-accent-ovr, var(--main-color))); letter-spacing: 0.3em; text-indent: 0.3em;
 }
 .panel-theme-sharp .sys-btn:hover:not(:disabled) {
-  background: var(--panel-accent-ovr, var(--main-color)); color: var(--panel-bg-ovr, #08101a); box-shadow: 0 0 24px rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.6);
+  background: var(--panel-accent-ovr, var(--main-color)); color: var(--panel-bg-ovr, var(--ui-text-main)); box-shadow: 0 0 24px rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.6);
 }
 .panel-theme-sharp .save-slot, .panel-theme-sharp .log-item {
   border-radius: 0; background: rgba(255,255,255,0.03);
   border: 1px solid rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.35); border-left: 3px solid var(--panel-accent-ovr, var(--main-color));
 }
 .panel-theme-sharp .save-slot:hover, .panel-theme-sharp .log-item:hover { background: rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.12); }
-.panel-theme-sharp .save-slot-num, .panel-theme-sharp .log-name { color: var(--panel-text-ovr, #ffffff); }
-.panel-theme-sharp .save-slot-info, .panel-theme-sharp .log-text { color: var(--panel-text-dim-ovr, #9fb3d6); }
+.panel-theme-sharp .save-slot-num, .panel-theme-sharp .log-name { color: var(--panel-text-ovr, var(--ui-text-main)); }
+.panel-theme-sharp .save-slot-info, .panel-theme-sharp .log-text { color: var(--panel-text-dim-ovr, var(--ui-text-dim)); }
 .panel-theme-sharp .save-slot-del, .panel-theme-sharp #reset-all-btn { border-radius: 0; }
 
 /* ---------- pop：ステッカー風。分厚い枠＋大きくズレた塗り影＋わずかな傾き ---------- */
@@ -380,13 +382,13 @@ rt {
 /* ---------- line：ダークグラス＋ネオングロー ---------- */
 .panel-theme-line .system-panel {
   border-radius: 6px; border: 2px solid var(--panel-accent-ovr, var(--main-color));
-  background: var(--panel-bg-ovr, rgba(6, 8, 16, 0.82));
+  background: var(--panel-bg-ovr, var(--panel-bg));
   box-shadow: 0 0 0 1px rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.4) inset,
               0 0 50px rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.55),
               0 20px 60px rgba(0,0,0,0.9);
 }
 .panel-theme-line .system-title, .panel-theme-line #save-mode-title {
-  color: var(--panel-text-ovr, #ffffff);
+  color: var(--panel-text-ovr, var(--ui-text-main));
   text-shadow: 0 0 10px rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.9), 0 0 26px rgba(var(--panel-accent-ovr-rgb, var(--main-color-rgb)), 0.6);
 }
 .panel-theme-line .sys-btn {
@@ -707,6 +709,12 @@ rt {
 }
 
 /* ======================================================================
+ * Chromebook専用 テキスト＆ルビ調整用フック
+ * 実機検証で個別調整が必要になった場合、ここに .is-chromebook スコープの
+ * ルールを追加する（is-ipadセクションと同じ書き方）。
+ * ====================================================================== */
+
+/* ======================================================================
  * AUTOモード表示バッジ（画面右上へ配置変更）
  * ====================================================================== */
 #auto-badge {
@@ -762,4 +770,54 @@ rt {
 }
 #custom-confirm-screen.hidden {
   display: none !important;          /* 隠れている時は非表示に固定 */
+}
+/* ======================================================================
+ * cqw / cqh 未対応ブラウザ向けフォールバック
+ * #game-canvas は #game-wrapper（100vw / 100vh）に対して width/height 100% のため、
+ * cqw / cqh の数値はそのまま vw / vh に置き換えても表示は変わらない。
+ * container-type を認識しないブラウザでのみ有効になる。
+ * ====================================================================== */
+@supports not (container-type: size) {
+  #title-logo-image {
+    width: 80vw;
+    max-height: 50vh;
+    filter: drop-shadow(0 0 1vw rgba(var(--main-color-rgb), 0.4));
+  }
+  #title-logo-text { font-size: 5vw; }
+  #title-sub-text { font-size: 1.5vw; margin-top: 0.5vh; }
+
+  #title-menu { gap: 2.5vh; width: 25vw; }
+  #title-menu .title-btn.is-image-btn { height: 9vh !important; }
+
+  .title-btn {
+    font-size: 1.8vw;
+    border-width: 0.2vw;
+    border-radius: 5vw;
+    padding: 1.5vh 0;
+    box-shadow: 0 0.8vh 1.5vh rgba(0, 0, 0, 0.1), 0 0.5vh 0 var(--title-btn-border);
+  }
+  .title-btn:hover:not(:disabled) {
+    transform: translateY(-0.4vh) scale(1.02);
+    box-shadow: 0 1.2vh 2vh rgba(0, 0, 0, 0.15), 0 0.9vh 0 var(--title-btn-border);
+  }
+  .title-btn:active:not(:disabled) {
+    transform: translateY(0.4vh);
+    box-shadow: 0 0.2vh 0.5vh rgba(0, 0, 0, 0.1), 0 0.1vh 0 var(--title-btn-border);
+  }
+
+  .choice-btn { font-size: max(17px, 2.0vw); }
+  #name-tag { min-height: max(16px, 1.6vw); font-size: max(16px, 1.8vw); }
+  #dialog-text { font-size: max(15px, 1.6vw); }
+
+  .game-btn { width: max(36px, 3.5vw); height: max(36px, 3.5vw); font-size: max(9px, 0.8vw); }
+  .game-btn.is-common-bg { padding: max(8px, 0.8vw) max(16px, 1.5vw); }
+
+  #chapter-text { font-size: max(24px, 4vw); }
+
+  .char-card { width: max(140px, 14vw); }
+  #char-select-screen .system-title { font-size: max(28px, 3vw); }
+  #char-select-start-btn { font-size: max(20px, 2vw) !important; }
+  .char-card-img { height: max(180px, 18vw); }
+
+  #auto-badge { top: max(20px, 2.2vh); right: max(20px, 2.0vw); font-size: max(11px, 1.1vw); }
 }
