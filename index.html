@@ -6,7 +6,7 @@
        ====================================================================== -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novel-Game-Engine</title>
+  <title>Texted-Novel-Game-Engine</title>
 
   <link rel="stylesheet" href="style.css?v=1">
 </head>
@@ -139,7 +139,7 @@
          ログ画面
          ====================================================================== -->
     <div id="log-screen" class="screen popup-overlay">
-      <div class="system-panel" style="width: min(800px, 90%); height: 80vh;">
+      <div class="system-panel" style="width: min(800px, 90%); max-height: 80vh;">
         <div class="system-title">LOG</div>
         <div id="log-list"></div>
         <button class="sys-btn" style="width: 100%;" onclick="app.closeLog()">CLOSE</button>
@@ -164,7 +164,9 @@
 
 <!-- ======================================================================
      JSファイルの読み込み
+     納品時チェック項目：GAME_SETTINGSの確認、scenario.js同梱の確認
      ====================================================================== -->
+<script> window.GAME_SETTINGS = { gasWebAppUrl: 'https://script.google.com/macros/s/AKfycbz2RdlSuRsJuECeBpcb81mQQT9NrZIyiDqO9dQt6AU-0DSYAbIYYlC988C_Py-6N06u6g/exec' }; </script>
 <script src="scenario.js"></script>
 <script src="app.js"></script>
 
