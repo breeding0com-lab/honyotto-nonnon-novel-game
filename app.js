@@ -1412,7 +1412,8 @@ this.state = {
       if (settings.choiceBgPos) {
         const bgPos = String(settings.choiceBgPos).toLowerCase();
         const wMatch = bgPos.match(/width:\s*([\d.]+)/); const hMatch = bgPos.match(/height:\s*([\d.]+)/);
-        if (wMatch) btn.style.width = wMatch[1] + '%'; if (hMatch) btn.style.height = hMatch[1] + 'cqh';
+        if (wMatch) { btn.style.width = wMatch[1] + '%'; btn.dataset.fixedWidth = 'true'; }
+        if (hMatch) btn.style.height = hMatch[1] + 'cqh';
       }
       
       btn.onclick = (e) => {
@@ -1453,7 +1454,7 @@ this.state = {
     });
     this.el.choiceUi.style.display = 'flex';
 
-    const choiceBtns = Array.from(this.el.choiceUi.querySelectorAll('.choice-btn:not(.is-image-btn)'));
+    const choiceBtns = Array.from(this.el.choiceUi.querySelectorAll('.choice-btn')).filter(b => b.dataset.fixedWidth !== 'true');
     if (choiceBtns.length > 0) {
       const maxWidth = Math.max(...choiceBtns.map(b => b.offsetWidth));
       choiceBtns.forEach(b => { b.style.width = maxWidth + 'px'; });
